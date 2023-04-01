@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "Phishing Detection",
+    "description": "Enable focus mode on Chrome's official Extensions and Chrome Web Store documentation.",
+    "version": "1.0",
+    "action": {
+        "default_icon": "hello_extensions.png",
+        "default_popup": "hello.html"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": ["activeTab", "scripting", "tabs", "action"],
+    "host_permissions": ["https://dog.ceo/*", "https://phishing-detection.onrender.com/*"]
+  }
