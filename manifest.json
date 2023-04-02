@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Phishing Detection",
+    "name": "Fish Net",
     "description": "Protect yourself from phishing attacks with our detection extension. Stay safe online with real-time scanning and customizable settings",
     "version": "1.0",
     "action": {
