@@ -36,7 +36,10 @@ chrome.action.onClicked.addListener((tab) => {
 // Listen for the 'activated' event to know when the extension has loaded
 chrome.runtime.onInstalled.addListener(function () {
     chrome.action.setBadgeText({
-        text: "Wait...",
+        text: "Risk",
+    });
+    chrome.action.setBadgeBackgroundColor({
+        color: [255, 0, 0, 255] // Set the color to green
     });
     // Register a listener for the 'tabs.onUpdated' event
     chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
