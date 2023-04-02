@@ -81,22 +81,30 @@ chrome.runtime.onInstalled.addListener(function () {
 
             //Creating a new URL object and getting IP address
             const urlObject = new URL(uniformRL);
-            const ipAddress = urlObject.hostname;
+            let ipAddress = urlObject.hostname;
             const hostname = urlObject.hostname
-            const port = urlObject.port
-
+            
+            
             // Manipulating it
             const URLSplitArray = uniformRL.split('/');
             const URLSplitHost = uniformRL.split('.')
-
-
-
-
-
+            
+            
+            
+            
+            
             const http_in_path = uniformRL.includes('http')
             const https_token = uniformRL.includes('https')
             const nb_www = uniformRL.includes('www');
             const nb_com = uniformRL.includes('.com');
+            
+            
+            // const ratio_digits_url = 0;
+            // const ratio_digits_host = 0;
+            let noOfDigitsInTheUrl = 0;
+            let noOfCharactersInTheUrl = 0;
+            let noOfDigitsInTheHostname = 0;
+            let noOfCharactersInTheHostname = 0;
             
             
             
@@ -109,7 +117,30 @@ chrome.runtime.onInstalled.addListener(function () {
                 if (lookupTable[char] != undefined) {
                     lookupTable[char]++;
                 }
+                if(((char.charCodeAt(0) - 48) >= 0) && ((char.charCodeAt(0) - 48) <= 9)) {
+                    // console.log(char.charCodeAt(0) - 48);
+                    noOfDigitsInTheUrl++;
+                }
+                else {
+                    noOfCharactersInTheUrl++;
+                }
             }
+            const ratio_digits_url = parseFloat(noOfDigitsInTheUrl/noOfCharactersInTheUrl);
+
+
+            for (let i = 0; i < hostname.length; i++) {
+                const char = hostname[i];
+                const theDigit = (char.charCodeAt(0) - 48);
+                if (theDigit >= 0 && theDigit <= 9) {
+                    noOfDigitsInTheHostname++;
+                }
+                else {
+                    noOfCharactersInTheHostname++;
+                }
+            }
+            const ratio_digits_hostname = parseFloat(noOfDigitsInTheHostname/noOfCharactersInTheHostname);
+
+
             
             const numberOf = [
                 { name: 'nb_dot', value: lookupTable['.'] },
@@ -141,8 +172,12 @@ chrome.runtime.onInstalled.addListener(function () {
             const length_url = uniformRL.length;
             const length_hostname = URLSplitArray[2];
 
-            const isDigitURL = 0;
-            const isDigitHost = 0;
+
+            //checking the number of subdomains in url
+            const nb_subdomain = urlObject.hostname.split('.').length - 2;
+
+            
+
             // const hostnamee = URLSplitHost[2];
             
             
@@ -151,13 +186,31 @@ chrome.runtime.onInstalled.addListener(function () {
             console.log("Length: ", length_url);
             console.log("Length of hostname", length_hostname.length);
             
+            
+
+            // const url = new URL('https://example.com');
+            
+            //checking for ipAdress
+            if (/^\d+\.\d+\.\d+\.\d+$/.test(urlObject.hostname)) {
+                ipAddress = true;
+            } else {
+                ipAddress = false;
+            }
+            
+            //checking for tld in url
+            const tldRegex = /\.com|\.net|\.org|\.edu|\.gov/i;
+            const hasTldInPath = tldRegex.test(urlObject.hostname);
 
             console.log("ip: ", ipAddress) //doesnt work properly
             console.log(numberOf); //done
             console.log("http_in_path: ", http_in_path,"http_token: ", https_token, "nb_www: ", nb_www, "nb_com: ", nb_com) //done
             console.log("hostname: ", hostname)//doesnt work properly
-            console.log("port: ", port)//doesnt work properly
-
+            console.log("Ratio_digits_url: ", ratio_digits_url);
+            console.log("Ratio_digits_hostname: ", ratio_digits_hostname);
+            console.log("port: ", urlObject.port)//doesnt work properly
+            
+            console.log("tld_in_path: ", hasTldInPath);
+            console.log("nb_subdomain: ", nb_subdomain);
         }
     });
 });
