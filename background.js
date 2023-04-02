@@ -1,6 +1,8 @@
-chrome.action.onClicked.addListener(async (tab) => {
+chrome.action.onClicked.addListener((tab) => {
     console.log(tab);
 });
+
+// const getNumber = require('./nb')
 
 // chrome.tabs.getSelected(null,function(tab) {
 //     var tablink = tab.url;
@@ -13,12 +15,6 @@ chrome.action.onClicked.addListener(async (tab) => {
 //     console.log(url);
 //     // use `url` here inside the callback because it's asynchronous!
 // });
-
-
-
-
-
-
 
 // chrome.runtime.onInstalled.addListener(() => {
 
@@ -38,16 +34,16 @@ chrome.action.onClicked.addListener(async (tab) => {
 
 
 // Listen for the 'activated' event to know when the extension has loaded
-chrome.runtime.onInstalled.addListener(function() {
+chrome.runtime.onInstalled.addListener(function () {
     chrome.action.setBadgeText({
         text: "Wait...",
     });
     // Register a listener for the 'tabs.onUpdated' event
-    chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
+    chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
         // Only log a message if the URL has changed
         if (changeInfo.url) {
             console.log("Hi");
-            const response = await fetch('https://phishing-detection.onrender.com/predict', {
+            const response = await fetch('https://jsonplaceholder.typicode.com/todos/10', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -81,30 +77,108 @@ chrome.runtime.onInstalled.addListener(function() {
             // await chrome.browserAction.openPopup();
 
             // Getting the URL
-            const URL = changeInfo.url;
+            const uniformRL = changeInfo.url;
 
-
-
-
-
-
-
-
-
-
-
+            //Creating a new URL object and getting IP address
+            const urlObject = new URL(uniformRL);
+            const ipAddress = urlObject.hostname;
+            const hostname = urlObject.hostname
+            const port = urlObject.port
 
             // Manipulating it
-            const URLSplitArray = URL.split('/');
+            const URLSplitArray = uniformRL.split('/');
+            const URLSplitHost = uniformRL.split('.')
 
 
 
+
+
+            const http_in_path = uniformRL.includes('http')
+            const https_token = uniformRL.includes('https')
+            const nb_www = uniformRL.includes('www');
+            const nb_com = uniformRL.includes('.com');
+            
+            
+            
+            //getting the numbers
+            const lookupTable = { ".": 0, "-": 0, "@": 0, "?": 0, "&": 0, "=": 0, "_": 0, "~": 0, "%": 0, "/": 0, ":": 0, ",": 0, ";": 0, "$": 0, " ": 0, "www": false, ".com": false, "//": 0};
+            
+            
+            for (let i = 0; i < uniformRL.length; i++) {
+                const char = uniformRL[i];
+                if (lookupTable[char] != undefined) {
+                    lookupTable[char]++;
+                }
+            }
+            
+            const numberOf = [
+                { name: 'nb_dot', value: lookupTable['.'] },
+                { name: 'nb_hyphen', value: lookupTable['-'] },
+                { name: 'nb_at', value: lookupTable['@'] },
+                { name: 'nb_qm', value: lookupTable['?'] },
+                { name: 'nb_and', value: lookupTable['&'] },
+                { name: 'nb_eq', value: lookupTable['='] },
+                { name: 'nb_underscore', value: lookupTable['_'] },
+                { name: 'nb_tilde', value: lookupTable['~'] },
+                { name: 'nb_percent', value: lookupTable['%'] },
+                { name: 'nb_slash', value: lookupTable['/'] },
+                { name: 'nb_colon', value: lookupTable[':'] },
+                { name: 'nb_comma', value: lookupTable[','] },
+                { name: 'nb_semicolumn', value: lookupTable[';'] },
+                { name: 'nb_dollar', value: lookupTable['$'] },
+                { name: 'nb_space', value: lookupTable[' '] },
+                { name: 'nb_dslash', value: lookupTable['//'] }
+            ];
+
+            
+            
+            
+            
+            
+            
+            
             // Defining the final features
-            const length_url = URL.length;
-            const length_hostname = URLSplitArray[2]
-            // console.log(length_url);
+            const length_url = uniformRL.length;
+            const length_hostname = URLSplitArray[2];
 
-            console.log("New URL loaded:", URL);
+            const isDigitURL = 0;
+            const isDigitHost = 0;
+            // const hostnamee = URLSplitHost[2];
+            
+            
+            // console.log(length_url);
+            console.log("New URL loaded:", uniformRL);
+            console.log("Length: ", length_url);
+            console.log("Length of hostname", length_hostname.length);
+            
+
+            console.log("ip: ", ipAddress) //doesnt work properly
+            console.log(numberOf); //done
+            console.log("http_in_path: ", http_in_path,"http_token: ", https_token, "nb_www: ", nb_www, "nb_com: ", nb_com) //done
+            console.log("hostname: ", hostname)//doesnt work properly
+            console.log("port: ", port)//doesnt work properly
+
         }
     });
 });
+
+// ['length_url', 'length_hostname', 'ip', 'nb_dots', 'nb_hyphens', 'nb_at',
+//        'nb_qm', 'nb_and', 'nb_eq', 'nb_underscore', 'nb_tilde', 'nb_percent',
+//        'nb_slash', 'nb_colon', 'nb_comma', 'nb_semicolumn', 'nb_dollar',
+//        'nb_space', 'nb_www', 'nb_com', 'nb_dslash', 'http_in_path',
+//        'https_token', 'ratio_digits_url', 'ratio_digits_host', 'port',
+//        'tld_in_path', 'tld_in_subdomain', 'nb_subdomains', 'prefix_suffix',
+//        'random_domain', 'shortening_service', 'path_extension',
+//        'nb_redirection', 'nb_external_redirection', 'length_words_raw',
+//        'char_repeat', 'shortest_words_raw', 'shortest_word_host',
+//        'shortest_word_path', 'longest_words_raw', 'longest_word_host',
+//        'longest_word_path', 'avg_words_raw', 'avg_word_host', 'avg_word_path',
+//        'phish_hints', 'domain_in_brand', 'suspecious_tld',
+//        'statistical_report', 'nb_hyperlinks', 'ratio_intHyperlinks',
+//        'ratio_extHyperlinks', 'nb_extCSS', 'ratio_extRedirection',
+//        'ratio_extErrors', 'login_form', 'external_favicon', 'links_in_tags',
+//        'ratio_intMedia', 'ratio_extMedia', 'iframe', 'popup_window',
+//        'safe_anchor', 'onmouseover', 'right_clic', 'empty_title',
+//        'domain_in_title', 'domain_with_copyright', 'whois_registered_domain',
+//        'domain_registration_length', 'domain_age', 'web_traffic', 'dns_record',
+//        'google_index', 'page_rank']
