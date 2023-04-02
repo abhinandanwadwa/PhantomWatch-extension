@@ -43,13 +43,6 @@ chrome.runtime.onInstalled.addListener(function () {
         // Only log a message if the URL has changed
         if (changeInfo.url) {
             console.log("Hi");
-            const response = await fetch('https://jsonplaceholder.typicode.com/todos/10', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                mode: 'cors'
-            })
             // .then((res) => res.json())
             // .then((ans) => {
             //     console.log(ans);
@@ -71,9 +64,6 @@ chrome.runtime.onInstalled.addListener(function () {
             //     }
             // });
 
-            const json = await response.json();
-            console.log(json);
-
             // await chrome.browserAction.openPopup();
 
             // Getting the URL
@@ -93,10 +83,10 @@ chrome.runtime.onInstalled.addListener(function () {
             
             
             
-            const http_in_path = uniformRL.includes('http')
-            const https_token = uniformRL.includes('https')
-            const nb_www = uniformRL.includes('www');
-            const nb_com = uniformRL.includes('.com');
+            const http_in_path = (uniformRL.includes('http') ? 0 : 1);
+            const https_token = (uniformRL.includes('https') ? 0 : 1);
+            const nb_www = (uniformRL.includes('www') ? 0 : 1);
+            const nb_com = (uniformRL.includes('.com') ? 0 : 1);
             
             
             // const ratio_digits_url = 0;
@@ -109,7 +99,7 @@ chrome.runtime.onInstalled.addListener(function () {
             
             
             //getting the numbers
-            const lookupTable = { ".": 0, "-": 0, "@": 0, "?": 0, "&": 0, "=": 0, "_": 0, "~": 0, "%": 0, "/": 0, ":": 0, ",": 0, ";": 0, "$": 0, " ": 0, "www": false, ".com": false, "//": 0};
+            const lookupTable = { ".": 0, "-": 0, "@": 0, "?": 0, "&": 0, "=": 0, "_": 0, "~": 0, "%": 0, "/": 0, ":": 0, ",": 0, ";": 0, "$": 0, " ": 0, "//": 0};
             
             
             for (let i = 0; i < uniformRL.length; i++) {
@@ -178,10 +168,10 @@ chrome.runtime.onInstalled.addListener(function () {
 
             
 
-            // const hostnamee = URLSplitHost[2];
+            const hostnamee = URLSplitHost[2];
             
             
-            // console.log(length_url);
+            console.log(length_url);
             console.log("New URL loaded:", uniformRL);
             console.log("Length: ", length_url);
             console.log("Length of hostname", length_hostname.length);
@@ -192,14 +182,15 @@ chrome.runtime.onInstalled.addListener(function () {
             
             //checking for ipAdress
             if (/^\d+\.\d+\.\d+\.\d+$/.test(urlObject.hostname)) {
-                ipAddress = true;
+                ipAddress = 1;
             } else {
-                ipAddress = false;
+                ipAddress = 0;
             }
             
             //checking for tld in url
             const tldRegex = /\.com|\.net|\.org|\.edu|\.gov/i;
             const hasTldInPath = tldRegex.test(urlObject.hostname);
+            const hasTldInSb = tldRegex.test(urlObject.hostname);
 
             console.log("ip: ", ipAddress) //doesnt work properly
             console.log(numberOf); //done
@@ -210,7 +201,35 @@ chrome.runtime.onInstalled.addListener(function () {
             console.log("port: ", urlObject.port)//doesnt work properly
             
             console.log("tld_in_path: ", hasTldInPath);
+            console.log("tld_in_subdomain: ", hasTldInSb);
             console.log("nb_subdomain: ", nb_subdomain);
+
+
+
+
+
+
+
+
+            const response = await fetch('https://phishing-detection.onrender.com/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                mode: 'cors',
+                body: JSON.stringify({ input: [ length_url, length_hostname.length, ipAddress, numberOf[0].value, numberOf[1].value, numberOf[2].value, numberOf[3].value, numberOf[4].value, numberOf[5].value, numberOf[6].value, numberOf[7].value, numberOf[8].value, numberOf[9].value, numberOf[10].value, numberOf[11].value, numberOf[12].value, numberOf[13].value, numberOf[14].value, nb_www, nb_com, numberOf[15].value, http_in_path, https_token, ratio_digits_url, ratio_digits_hostname, (urlObject.port ? 1 : 0), hasTldInPath, hasTldInSb ,nb_subdomain ] })
+
+                // body: JSON.stringify({ input: [77.0, 23.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.0, 1.0, 0.0, 0.0, 0.0] })
+            });
+
+            const json = await response.json();
+            console.log(json);
+
+
+
+
+
+
         }
     });
 });

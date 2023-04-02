@@ -4,12 +4,12 @@
     "description": "Protect yourself from phishing attacks with our detection extension. Stay safe online with real-time scanning and customizable settings",
     "version": "1.0",
     "action": {
-        "default_icon": "hello_extensions.png",
+        "default_icon": "fishnet.png",
         "default_popup": "hello.html"
     },
     "background": {
         "service_worker": "background.js"
     },
     "permissions": ["activeTab", "scripting", "tabs"],
-    "host_permissions": ["https://*/*", "https://phishing-detection.onrender.com/*"]
+    "host_permissions": ["https://*/*"]
 }
